@@ -1,0 +1,20 @@
+{
+  "name": "neuralnetwork",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run build && nodemon dist/index.js",
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^1.16.1",
+    "tslint": "^5.12.1",
+    "tslint-config-prettier": "^1.17.0"
+  },
+  "dependencies": {
+    "nodemon": "^1.18.9"
+  }
+}
