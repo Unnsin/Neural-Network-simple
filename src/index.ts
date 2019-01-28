@@ -50,12 +50,3 @@ function MSE(outputSet: Array<number>, answerSet: Array<number>) {
   });
   return answer / outputSet.length;
 }
-
-console.log(
-  MOR(
-    gradient(0.69, alternativeDelta(0.69, [-2.3], delta(0.33, 1))),
-    alternativeDelta(0.69, [-2.3], delta(0.33, 1)),
-    -2.3,
-    0
-  )
-);
