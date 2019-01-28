@@ -2,10 +2,14 @@ import { NeuronType } from "./constans";
 
 export default class Neuron {
   constructor(
-    private _inputs: Array<number>,
-    private _weights: Array<number>,
-    private _type: NeuronType
-  ) {}
+    public _inputs: Array<number>,
+    public _weights: Array<number>,
+    public _type: NeuronType
+  ) {
+    this._inputs = _inputs;
+    this._weights = _weights;
+    this._type = _type;
+  }
 
   get inputs(): Array<number> {
     return this._inputs;
