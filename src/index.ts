@@ -1,3 +1,8 @@
+import * as fs from "fs";
+import * as js2xmlparser from "js2xmlparser";
+import * as parser from "xml2json";
+import NeuralNetwork from "./NeuralNetwork";
+
 const E = 0.7;
 const A = 0.3;
 
@@ -50,3 +55,5 @@ function MSE(outputSet: Array<number>, answerSet: Array<number>) {
   });
   return answer / outputSet.length;
 }
+
+NeuralNetwork.Main();

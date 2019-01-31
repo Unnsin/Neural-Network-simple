@@ -4,9 +4,3 @@ export interface InputLayoutTuple
   item2: Array<number>;
   length: 2;
 }
-
-export interface WeightsTuple extends Array<number | number> {
-  0: number;
-  1: number;
-  length: 2;
-}

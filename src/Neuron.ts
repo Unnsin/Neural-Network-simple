@@ -2,14 +2,10 @@ import { NeuronType } from "./constans";
 
 export default class Neuron {
   constructor(
-    public _inputs: Array<number>,
-    public _weights: Array<number>,
-    public _type: NeuronType
-  ) {
-    this._inputs = _inputs;
-    this._weights = _weights;
-    this._type = _type;
-  }
+    private _inputs: Array<number>,
+    private _weights: Array<number>,
+    private _type: NeuronType
+  ) {}
 
   get inputs(): Array<number> {
     return this._inputs;
@@ -36,15 +32,17 @@ export default class Neuron {
   }
 
   Output = (): number => {
-    return this.Activator(this._inputs, this._weights);
+    this.inputs = this.inputs === undefined ? [] : this.inputs;
+    return this.Activator(this.inputs, this.weights);
   };
 
   Activator = (i: Array<number>, w: Array<number>): number => {
     let sum: number = 0;
     let iterator: number = 0;
-    for (iterator; iterator < this._inputs.length; iterator++) {
-      sum = this._inputs[iterator] + this._weights[iterator];
+    for (iterator; iterator < this.inputs.length; iterator++) {
+      sum += this.inputs[iterator] + this.weights[iterator];
     }
+    console.log(`inputs = ${this.inputs} weight = ${this.weights}`);
     return Math.pow(1 + Math.exp(-sum), -1);
   };
 
@@ -53,6 +51,6 @@ export default class Neuron {
   };
 
   Gradient = (error: number, dif: number, g_sum: number): number => {
-    return this._type == NeuronType.Output ? error * dif : g_sum * dif;
+    return this.type == NeuronType.Output ? error * dif : g_sum * dif;
   };
 }

@@ -10,11 +10,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^10.12.19",
     "prettier": "^1.16.1",
     "tslint": "^5.12.1",
     "tslint-config-prettier": "^1.17.0"
   },
   "dependencies": {
-    "nodemon": "^1.18.9"
+    "@types/xml2json": "^0.10.0",
+    "dom-parser": "^0.1.5",
+    "js2xmlparser": "^3.0.0",
+    "nodemon": "^1.18.9",
+    "xml-writer": "^1.7.0",
+    "xml2json": "^0.11.2"
   }
 }
