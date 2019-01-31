@@ -45,7 +45,7 @@ export default class Neuron {
     return 1 / (1 + Math.exp(-sum));
   };
 
-  Derivativator = (outSignal: number): number => {
+  Derivativator = (outSignal: number = this.Output()): number => {
     return outSignal * (1 - outSignal);
   };
 

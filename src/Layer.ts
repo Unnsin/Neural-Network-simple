@@ -110,7 +110,7 @@ export class HiddenLayer extends Layer {
           this.Neurons[i].inputs[n] *
           this.Neurons[i].Gradient(
             0,
-            this.Neurons[i].Derivativator(this.Neurons[i].Output()),
+            this.Neurons[i].Derivativator(),
             gr_sums[i]
           );
       }
@@ -139,11 +139,11 @@ export class OutputLayer extends Layer {
           this.Neurons[k].weights[i] +
           this.Neurons[k].Gradient(
             errors[k],
-            this.Neurons[k].Derivativator(this.Neurons[k].Output()),
+            this.Neurons[k].Derivativator(),
             0
           );
-        gr_summ[i] = sum;
       }
+      gr_summ[i] = sum;
     }
 
     for (let i = 0; i < this.numofneurons; i++) {
@@ -153,7 +153,7 @@ export class OutputLayer extends Layer {
           this.Neurons[i].inputs[k] *
           this.Neurons[i].Gradient(
             errors[i],
-            this.Neurons[i].Derivativator(this.Neurons[i].Output()),
+            this.Neurons[i].Derivativator(),
             0
           );
       }
