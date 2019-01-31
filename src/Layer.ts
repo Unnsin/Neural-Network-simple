@@ -15,7 +15,7 @@ export abstract class Layer {
   protected neuronType: NeuronType;
   public Neurons: Array<Neuron>;
   protected Weights: Array<Array<number>>;
-  protected learningrate: number = 0.1;
+  protected learningrate: number = 0.9;
 
   constructor(non: number, nopn: number, nt: NeuronType, type: string) {
     this.Neurons = new Array(non);
@@ -70,7 +70,7 @@ export abstract class Layer {
           }
         }
         let xmlString = js2xmlparser.parse("object", obj);
-        fs.writeFile("./simple.xml", xmlString, err => {});
+        fs.writeFile(`./${type}_memory.xml`, xmlString, err => {});
         break;
       }
     }
@@ -101,8 +101,8 @@ export class HiddenLayer extends Layer {
     nextLayer.Data(hidden_output);
   }
 
-  public BackwardPass(stuff: Array<number>): Array<number> {
-    let gr_summ: Array<number> = [];
+  public BackwardPass(gr_sums: Array<number>): Array<number> {
+    let gr_sum: Array<number> = [];
     for (let i = 0; i < this.numofneurons; ++i) {
       for (let n = 0; n < this.numofprevneurons; ++n) {
         this.Neurons[i].weights[n] +=
@@ -111,11 +111,11 @@ export class HiddenLayer extends Layer {
           this.Neurons[i].Gradient(
             0,
             this.Neurons[i].Derivativator(this.Neurons[i].Output()),
-            gr_summ[i]
+            gr_sums[i]
           );
       }
     }
-    return gr_summ;
+    return gr_sum;
   }
 }
 

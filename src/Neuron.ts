@@ -42,8 +42,7 @@ export default class Neuron {
     for (iterator; iterator < this.inputs.length; iterator++) {
       sum += this.inputs[iterator] + this.weights[iterator];
     }
-    console.log(`inputs = ${this.inputs} weight = ${this.weights}`);
-    return Math.pow(1 + Math.exp(-sum), -1);
+    return 1 / (1 + Math.exp(-sum));
   };
 
   Derivativator = (outSignal: number): number => {

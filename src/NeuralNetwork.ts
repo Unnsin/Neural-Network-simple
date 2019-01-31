@@ -38,7 +38,7 @@ export default class NeuralNetwork {
   }
 
   static Train(net: NeuralNetwork): void {
-    let threshold: number = 0.001;
+    let threshold: number = 0.25;
     let temp_mess: Array<number> = new Array(iterError);
     let temp_cost: number = 0;
     do {
@@ -71,6 +71,7 @@ export default class NeuralNetwork {
       net.outputLayer.Recognize(net, null);
 
       for (let j = 0; j < net.fact.length; j++) {
+        console.log("answer");
         console.log(`${net.fact[j]}`);
       }
       console.log("\n");
