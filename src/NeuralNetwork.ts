@@ -3,19 +3,19 @@ import { HiddenLayer, OutputLayer } from "./Layer";
 import { NeuronType, MemoryMode } from "./constans";
 import { networkInterfaces } from "os";
 
-const lengthFacts = 2;
+const lengthFacts = 1;
 const iterError = 4;
 export default class NeuralNetwork {
   public inputLayer: InputLayer = new InputLayer();
   public hiddenLayer: HiddenLayer = new HiddenLayer(
-    4,
+    2,
     2,
     NeuronType.Hidden,
     "hidden_layer"
   );
   public outputLayer: OutputLayer = new OutputLayer(
+    1,
     2,
-    4,
     NeuronType.Output,
     "output_layer"
   );
@@ -43,9 +43,10 @@ export default class NeuralNetwork {
     let temp_cost: number = 0;
     // do {
       // for (let i = 0; i < net.inputLayer.Trainset().length; i++) {
-        net.hiddenLayer.Data(net.inputLayer.Trainset()[i][0]);
+        net.hiddenLayer.Data(net.inputLayer.Trainset()[1][0]);
         net.hiddenLayer.Recognize(null, net.outputLayer);
         net.outputLayer.Recognize(net, null);
+        console.log(net.fact);
         // let errors: Array<number> = new Array(
         //   net.inputLayer.Trainset()[i][1].length
         // );
