@@ -9,28 +9,27 @@ import NeuralNetwork from "./NeuralNetwork";
 /* ----------------------------- Abstract Class ----------------------------------- */
 
 export abstract class Layer {
-  protected numofneurons: number;
-  protected numofprevneurons: number;
-  protected type: string;
-  protected neuronType: NeuronType;
-  public Neurons: Array<Neuron>;
-  protected Weights: Array<Array<number>>;
-  protected learningrate: number = 0.9;
+  protected numOfNeurons: number; // количество нейронов на текущем слое 
+  protected numOfPrevNeurons: number; // количество нейронов на предидущем слое 
+  protected type: string; // тип слоя(скрытый, выходной)
+  protected neuronType: NeuronType; // тип нейронов в слое
+  public Neurons: Array<Neuron>; // нейроны текущего слоя 
+  protected Weights: Array<Array<number>>;  // вес синапсов
+  protected learningrate: number = 0.9; // скорость обучения 
 
   constructor(non: number, nopn: number, nt: NeuronType, type: string) {
     this.Neurons = new Array(non);
     this.type = type;
     this.neuronType = nt;
-    this.numofneurons = non;
-    this.numofprevneurons = nopn;
+    this.numOfNeurons = non;
+    this.numOfPrevNeurons = nopn;
     this.Weights = this.WeightInitialize(MemoryMode.GET, type);
     for (let i = 0; i < non; i++) {
       let temp_weights: Array<number> = new Array(non);
       for (let j = 0; j < nopn; j++) {
         temp_weights[j] = this.Weights[i][j];
       }
-      const arr: Array<number> = new Array();
-      this.Neurons[i] = new Neuron(arr, temp_weights, this.neuronType);
+      this.Neurons[i] = new Neuron([], temp_weights, this.neuronType);
     }
   }
 
@@ -43,8 +42,8 @@ export abstract class Layer {
   public WeightInitialize(mm: MemoryMode, type: string): Array<Array<number>> {
     console.log(`${type} weights are being initialized...`);
     let _weights = dimensionalArray<number>(
-      this.numofneurons,
-      this.numofprevneurons
+      this.numOfNeurons,
+      this.numOfPrevNeurons
     );
     switch (mm) {
       case MemoryMode.GET: {
@@ -63,8 +62,8 @@ export abstract class Layer {
       case MemoryMode.SET: {
         let obj = Object.create({});
         for (let l = 0; l < this.Neurons.length; l++) {
-          for (let k = 0; k < this.numofprevneurons; k++) {
-            obj[`item${k + this.numofprevneurons * l}`] = String(
+          for (let k = 0; k < this.numOfPrevNeurons; k++) {
+            obj[`item${k + this.numOfPrevNeurons * l}`] = String(
               this.Neurons[l].weights[k]
             );
           }
@@ -78,7 +77,7 @@ export abstract class Layer {
     return _weights;
   }
   public abstract Recognize(net: NeuralNetwork | null, nextLayer: Layer): void;
-  public abstract BackwardPass(stuff: Array<number>): Array<number>;
+  // public abstract BackwardPass(stuff: Array<number>): Array<number>;
 }
 
 /* ----------------------------- Hidden Layer Class ----------------------------------- */
@@ -101,22 +100,22 @@ export class HiddenLayer extends Layer {
     nextLayer.Data(hidden_output);
   }
 
-  public BackwardPass(gr_sums: Array<number>): Array<number> {
-    let gr_sum: Array<number> = [];
-    for (let i = 0; i < this.numofneurons; ++i) {
-      for (let n = 0; n < this.numofprevneurons; ++n) {
-        this.Neurons[i].weights[n] +=
-          this.learningrate *
-          this.Neurons[i].inputs[n] *
-          this.Neurons[i].Gradient(
-            0,
-            this.Neurons[i].Derivativator(),
-            gr_sums[i]
-          );
-      }
-    }
-    return gr_sum;
-  }
+  // public BackwardPass(gr_sums: Array<number>): Array<number> {
+  //   let gr_sum: Array<number> = [];
+  //   for (let i = 0; i < this.numOfNeurons; ++i) {
+  //     for (let n = 0; n < this.numOfPrevNeurons; ++n) {
+  //       this.Neurons[i].weights[n] +=
+  //         this.learningrate *
+  //         this.Neurons[i].inputs[n] *
+  //         this.Neurons[i].Gradient(
+  //           0,
+  //           this.Neurons[i].Derivativator(),
+  //           gr_sums[i]
+  //         );
+  //     }
+  //   }
+  //   return gr_sum;
+  // }
 }
 
 /* ----------------------------- Output Layer Class ----------------------------------- */
@@ -130,35 +129,35 @@ export class OutputLayer extends Layer {
       net.fact[i] = this.Neurons[i].Output();
     }
   }
-  public BackwardPass(errors: Array<number>): Array<number> {
-    let gr_summ: Array<number> = [];
-    for (let i = 0; i < this.numofprevneurons; i++) {
-      let sum: number = 0;
-      for (let k = 0; k < this.Neurons.length; k++) {
-        sum +=
-          this.Neurons[k].weights[i] +
-          this.Neurons[k].Gradient(
-            errors[k],
-            this.Neurons[k].Derivativator(),
-            0
-          );
-      }
-      gr_summ[i] = sum;
-    }
-
-    for (let i = 0; i < this.numofneurons; i++) {
-      for (let k = 0; k < this.numofprevneurons; k++) {
-        this.Neurons[i].weights[k] +=
-          this.learningrate *
-          this.Neurons[i].inputs[k] *
-          this.Neurons[i].Gradient(
-            errors[i],
-            this.Neurons[i].Derivativator(),
-            0
-          );
-      }
-    }
-
-    return gr_summ;
-  }
+  // public BackwardPass(errors: Array<number>): Array<number> {
+  //   let gr_summ: Array<number> = [];
+  //   for (let i = 0; i < this.numOfPrevNeurons; i++) {
+  //     let sum: number = 0;
+  //     for (let k = 0; k < this.Neurons.length; k++) {
+  //       sum +=
+  //         this.Neurons[k].weights[i] +
+  //         this.Neurons[k].Gradient(
+  //           errors[k],
+  //           this.Neurons[k].Derivativator(),
+  //           0
+  //         );
+  //     }
+  //     gr_summ[i] = sum;
+  //   }
+  // 
+  //   for (let i = 0; i < this.numOfNeurons; i++) {
+  //     for (let k = 0; k < this.numOfPrevNeurons; k++) {
+  //       this.Neurons[i].weights[k] +=
+  //         this.learningrate *
+  //         this.Neurons[i].inputs[k] *
+  //         this.Neurons[i].Gradient(
+  //          errors[i],
+  //           this.Neurons[i].Derivativator(),
+  //           0
+  //         );
+  //     }
+  //   }
+  // 
+  //   return gr_summ;
+  // }
 }

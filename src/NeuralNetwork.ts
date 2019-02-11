@@ -41,27 +41,27 @@ export default class NeuralNetwork {
     let threshold: number = 0.25;
     let temp_mess: Array<number> = new Array(iterError);
     let temp_cost: number = 0;
-    do {
-      for (let i = 0; i < net.inputLayer.Trainset().length; i++) {
+    // do {
+      // for (let i = 0; i < net.inputLayer.Trainset().length; i++) {
         net.hiddenLayer.Data(net.inputLayer.Trainset()[i][0]);
         net.hiddenLayer.Recognize(null, net.outputLayer);
         net.outputLayer.Recognize(net, null);
-        let errors: Array<number> = new Array(
-          net.inputLayer.Trainset()[i][1].length
-        );
-        for (let x = 0; x < errors.length; x++) {
-          errors[x] = net.inputLayer.Trainset()[i][1][x] - net.fact[x];
-        }
-        temp_mess[i] = net.getMSE(errors);
-        let temp_gsums: Array<number> = net.outputLayer.BackwardPass(errors);
-        net.hiddenLayer.BackwardPass(temp_gsums);
-      }
-      temp_cost = net.getCost(temp_mess);
-      console.log(`${temp_cost}`);
-    } while (temp_cost > threshold);
+        // let errors: Array<number> = new Array(
+        //   net.inputLayer.Trainset()[i][1].length
+        // );
+        // for (let x = 0; x < errors.length; x++) {
+        //   errors[x] = net.inputLayer.Trainset()[i][1][x] - net.fact[x];
+        // }
+        // temp_mess[i] = net.getMSE(errors);
+        // let temp_gsums: Array<number> = net.outputLayer.BackwardPass(errors);
+        // net.hiddenLayer.BackwardPass(temp_gsums);
+      // }
+      // temp_cost = net.getCost(temp_mess);
+      // console.log(`${temp_cost}`);
+    // } while (temp_cost > threshold);
 
-    net.hiddenLayer.WeightInitialize(MemoryMode.SET, "hidden_layer");
-    net.outputLayer.WeightInitialize(MemoryMode.SET, "output_layer");
+    // net.hiddenLayer.WeightInitialize(MemoryMode.SET, "hidden_layer");
+    // net.outputLayer.WeightInitialize(MemoryMode.SET, "output_layer");
   }
 
   static Test(net: NeuralNetwork): void {
@@ -81,6 +81,6 @@ export default class NeuralNetwork {
   static Main(): void {
     let network: NeuralNetwork = new NeuralNetwork();
     this.Train(network);
-    this.Test(network);
+    //this.Test(network);
   }
 }

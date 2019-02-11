@@ -32,24 +32,14 @@ export default class Neuron {
   }
 
   Output = (): number => {
-    this.inputs = this.inputs === undefined ? [] : this.inputs;
     return this.Activator(this.inputs, this.weights);
   };
 
-  Activator = (i: Array<number>, w: Array<number>): number => {
+  Activator = (inputs: Array<number>, weights: Array<number>): number => {
     let sum: number = 0;
-    let iterator: number = 0;
-    for (iterator; iterator < this.inputs.length; iterator++) {
-      sum += this.inputs[iterator] + this.weights[iterator];
-    }
+    weights.forEach((item, index)=> {
+      sum += item * inputs[index];
+    })
     return 1 / (1 + Math.exp(-sum));
-  };
-
-  Derivativator = (outSignal: number = this.Output()): number => {
-    return outSignal * (1 - outSignal);
-  };
-
-  Gradient = (error: number, dif: number, g_sum: number): number => {
-    return this.type == NeuronType.Output ? error * dif : g_sum * dif;
   };
 }
