@@ -3,6 +3,16 @@ import { HiddenLayer, OutputLayer } from "./Layer";
 import { NeuronType, MemoryMode } from "./constans";
 import { networkInterfaces } from "os";
 
+function MSE(outputSet: Array<number>, answerSet: Array<number>) {
+  if (outputSet.length == 1) {
+    return Math.pow(answerSet[0] - outputSet[0], 2) / 1;
+  }
+  const answer = outputSet.reduce((accumulator, currentValue, index) => {
+    return accumulator + Math.pow(answerSet[index] - currentValue, 2);
+  });
+  return answer / outputSet.length;
+}
+
 const lengthFacts = 1;
 const iterError = 4;
 export default class NeuralNetwork {
@@ -43,10 +53,11 @@ export default class NeuralNetwork {
     let temp_cost: number = 0;
     // do {
       // for (let i = 0; i < net.inputLayer.Trainset().length; i++) {
-        net.hiddenLayer.Data(net.inputLayer.Trainset()[1][0]);
+        net.hiddenLayer.Data(net.inputLayer.Trainset()[0][0]);
         net.hiddenLayer.Recognize(null, net.outputLayer);
         net.outputLayer.Recognize(net, null);
-        console.log(net.fact);
+        let error: number =  MSE(net.fact, net.inputLayer.Trainset()[0][1])
+        console.log(`answer : ${net.fact[0]}, errors: ${Math.round(error * 100)}%`);
         // let errors: Array<number> = new Array(
         //   net.inputLayer.Trainset()[i][1].length
         // );
