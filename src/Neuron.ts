@@ -42,4 +42,22 @@ export default class Neuron {
     })
     return 1 / (1 + Math.exp(-sum));
   };
+
+  Derivator = (input: number): number => {
+    return ( 1-input ) * input;
+  }
+
+  Delta = (IdealOut: number, ActualOut: number, g_sum: number): number => {
+    let sum: number = 0;
+    this.weights.forEach(item => {
+      sum += item * g_sum
+    });
+    return this.type ===  NeuronType.Output ? 
+      IdealOut - ActualOut * this.Derivator(ActualOut) : 
+      this.Derivator(ActualOut) * sum
+  }
+
+  Gradient = (delta: number, out: number): number => {
+    return delta * out
+  }
 }

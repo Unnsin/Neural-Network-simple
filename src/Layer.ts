@@ -129,35 +129,35 @@ export class OutputLayer extends Layer {
       net.fact[i] = this.Neurons[i].Output();
     }
   }
-  // public BackwardPass(errors: Array<number>): Array<number> {
-  //   let gr_summ: Array<number> = [];
-  //   for (let i = 0; i < this.numOfPrevNeurons; i++) {
-  //     let sum: number = 0;
-  //     for (let k = 0; k < this.Neurons.length; k++) {
-  //       sum +=
-  //         this.Neurons[k].weights[i] +
-  //         this.Neurons[k].Gradient(
-  //           errors[k],
-  //           this.Neurons[k].Derivativator(),
-  //           0
-  //         );
-  //     }
-  //     gr_summ[i] = sum;
-  //   }
-  // 
-  //   for (let i = 0; i < this.numOfNeurons; i++) {
-  //     for (let k = 0; k < this.numOfPrevNeurons; k++) {
-  //       this.Neurons[i].weights[k] +=
-  //         this.learningrate *
-  //         this.Neurons[i].inputs[k] *
-  //         this.Neurons[i].Gradient(
-  //          errors[i],
-  //           this.Neurons[i].Derivativator(),
-  //           0
-  //         );
-  //     }
-  //   }
-  // 
-  //   return gr_summ;
-  // }
+  public BackwardPass(errors: Array<number>): Array<number> {
+    let gr_summ: Array<number> = [];
+    for (let i = 0; i < this.numOfPrevNeurons; i++) {
+      let sum: number = 0;
+      for (let k = 0; k < this.Neurons.length; k++) {
+        sum +=
+          this.Neurons[k].weights[i] +
+          this.Neurons[k].Gradient(
+            errors[k],
+            this.Neurons[k].Derivativator(),
+            0
+          );
+      }
+      gr_summ[i] = sum;
+    }
+  
+    for (let i = 0; i < this.numOfNeurons; i++) {
+      for (let k = 0; k < this.numOfPrevNeurons; k++) {
+        this.Neurons[i].weights[k] +=
+          this.learningrate *
+          this.Neurons[i].inputs[k] *
+          this.Neurons[i].Gradient(
+           errors[i],
+            this.Neurons[i].Derivativator(),
+            0
+          );
+      }
+    }
+  
+    return gr_summ;
+  }
 }

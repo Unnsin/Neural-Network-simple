@@ -31,12 +31,16 @@ export default class NeuralNetwork {
   );
   public fact: Array<number> = new Array(lengthFacts);
 
-  public getMSE(errors: Array<number>): number {
-    let sum: number = 0;
-    for (let i = 0; i < errors.length; i++) {
-      sum += Math.pow(errors[i], 2);
+  public getMSE(net: NeuralNetwork, iter: number): number {
+    const outputSet = net.inputLayer.Trainset()[iter][1];
+    const answerSet = net.fact
+    if (outputSet.length == 1) {
+      return Math.pow(answerSet[0] - outputSet[0], 2) / 1;
     }
-    return 0.5 * sum;
+    const answer = outputSet.reduce((accumulator, currentValue, index) => {
+      return accumulator + Math.pow(answerSet[index] - currentValue, 2);
+    });
+    return answer / outputSet.length;
   }
 
   public getCost(mses: Array<number>): number {
@@ -52,24 +56,16 @@ export default class NeuralNetwork {
     let temp_mess: Array<number> = new Array(iterError);
     let temp_cost: number = 0;
     // do {
-      // for (let i = 0; i < net.inputLayer.Trainset().length; i++) {
-        net.hiddenLayer.Data(net.inputLayer.Trainset()[0][0]);
+       for (let i = 0; i < net.inputLayer.Trainset().length; i++) {
+        net.hiddenLayer.Data(net.inputLayer.Trainset()[i][0]);
         net.hiddenLayer.Recognize(null, net.outputLayer);
         net.outputLayer.Recognize(net, null);
-        let error: number =  MSE(net.fact, net.inputLayer.Trainset()[0][1])
-        console.log(`answer : ${net.fact[0]}, errors: ${Math.round(error * 100)}%`);
-        // let errors: Array<number> = new Array(
-        //   net.inputLayer.Trainset()[i][1].length
-        // );
-        // for (let x = 0; x < errors.length; x++) {
-        //   errors[x] = net.inputLayer.Trainset()[i][1][x] - net.fact[x];
-        // }
-        // temp_mess[i] = net.getMSE(errors);
+        temp_mess[i] = net.getMSE(net, i);
         // let temp_gsums: Array<number> = net.outputLayer.BackwardPass(errors);
         // net.hiddenLayer.BackwardPass(temp_gsums);
-      // }
-      // temp_cost = net.getCost(temp_mess);
-      // console.log(`${temp_cost}`);
+      }
+      temp_cost = net.getCost(temp_mess);
+      console.log(`Temp cost: ${temp_cost}`);
     // } while (temp_cost > threshold);
 
     // net.hiddenLayer.WeightInitialize(MemoryMode.SET, "hidden_layer");
