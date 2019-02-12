@@ -4,7 +4,8 @@ export default class Neuron {
   constructor(
     private _inputs: Array<number>,
     private _weights: Array<number>,
-    private _type: NeuronType
+    private _type: NeuronType,
+    public output: number,
   ) {}
 
   get inputs(): Array<number> {
@@ -32,7 +33,12 @@ export default class Neuron {
   }
 
   Output = (): number => {
-    return this.Activator(this.inputs, this.weights);
+    if(this.output !== 0){
+      return this.output
+    } else {
+      this.output = this.Activator(this.inputs, this.weights);
+      return this.Activator(this.inputs, this.weights);
+    }
   };
 
   Activator = (inputs: Array<number>, weights: Array<number>): number => {
@@ -44,20 +50,20 @@ export default class Neuron {
   };
 
   Derivator = (input: number): number => {
-    return ( 1-input ) * input;
+    return (1 - input) * input;
   }
 
-  Delta = (IdealOut: number, ActualOut: number, g_sum: number): number => {
+  Delta = (error: number, g_sum: number): number => {
     let sum: number = 0;
     this.weights.forEach(item => {
       sum += item * g_sum
     });
     return this.type ===  NeuronType.Output ? 
-      IdealOut - ActualOut * this.Derivator(ActualOut) : 
-      this.Derivator(ActualOut) * sum
+      error * this.Derivator(this.Output()) : 
+      this.Derivator(this.Output()) * sum
   }
 
-  Gradient = (delta: number, out: number): number => {
-    return delta * out
+  Gradient = (delta: number): number => {
+    return delta * this.Output()
   }
 }

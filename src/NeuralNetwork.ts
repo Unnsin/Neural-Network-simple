@@ -61,15 +61,15 @@ export default class NeuralNetwork {
         net.hiddenLayer.Recognize(null, net.outputLayer);
         net.outputLayer.Recognize(net, null);
         temp_mess[i] = net.getMSE(net, i);
-        // let temp_gsums: Array<number> = net.outputLayer.BackwardPass(errors);
-        // net.hiddenLayer.BackwardPass(temp_gsums);
+        let temp_gsums: Array<number> = net.outputLayer.BackwardPass([temp_mess[i]]);
+        net.hiddenLayer.BackwardPass(temp_gsums);
       }
       temp_cost = net.getCost(temp_mess);
       console.log(`Temp cost: ${temp_cost}`);
     // } while (temp_cost > threshold);
-
-    // net.hiddenLayer.WeightInitialize(MemoryMode.SET, "hidden_layer");
-    // net.outputLayer.WeightInitialize(MemoryMode.SET, "output_layer");
+    net.hiddenLayer.WeightInitialize(MemoryMode.SET, "hidden_layer");
+    net.outputLayer.WeightInitialize(MemoryMode.SET, "output_layer");
+    
   }
 
   static Test(net: NeuralNetwork): void {

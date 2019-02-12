@@ -15,7 +15,8 @@ export abstract class Layer {
   protected neuronType: NeuronType; // тип нейронов в слое
   public Neurons: Array<Neuron>; // нейроны текущего слоя 
   protected Weights: Array<Array<number>>;  // вес синапсов
-  protected learningrate: number = 0.9; // скорость обучения 
+  protected learningrate: number = 0.7; // скорость обучения 
+  protected alpha: number = 0.3 //момент
 
   constructor(non: number, nopn: number, nt: NeuronType, type: string) {
     this.Neurons = new Array(non);
@@ -29,7 +30,7 @@ export abstract class Layer {
       for (let j = 0; j < nopn; j++) {
         temp_weights[j] = this.Weights[i][j];
       }
-      this.Neurons[i] = new Neuron([], temp_weights, this.neuronType);
+      this.Neurons[i] = new Neuron([], temp_weights, this.neuronType, 0);
     }
   }
 
@@ -77,7 +78,7 @@ export abstract class Layer {
     return _weights;
   }
   public abstract Recognize(net: NeuralNetwork | null, nextLayer: Layer): void;
-  // public abstract BackwardPass(stuff: Array<number>): Array<number>;
+  public abstract BackwardPass(stuff?: Array<number>): Array<number>;
 }
 
 /* ----------------------------- Hidden Layer Class ----------------------------------- */
@@ -100,22 +101,23 @@ export class HiddenLayer extends Layer {
     nextLayer.Data(hidden_output);
   }
 
-  // public BackwardPass(gr_sums: Array<number>): Array<number> {
-  //   let gr_sum: Array<number> = [];
-  //   for (let i = 0; i < this.numOfNeurons; ++i) {
-  //     for (let n = 0; n < this.numOfPrevNeurons; ++n) {
-  //       this.Neurons[i].weights[n] +=
-  //         this.learningrate *
-  //         this.Neurons[i].inputs[n] *
-  //         this.Neurons[i].Gradient(
-  //           0,
-  //           this.Neurons[i].Derivativator(),
-  //           gr_sums[i]
-  //         );
-  //     }
-  //   }
-  //   return gr_sum;
-  // }
+  public BackwardPass(gr_sums: Array<number>): Array<number> {
+    let gr_sum: Array<number> = [];
+
+   for (let i = 0; i < this.numOfNeurons; ++i) {
+      this.Neurons.forEach(neuron => {
+        gr_sum[i] = neuron.Gradient(neuron.Delta(0, gr_sums[i]))
+      }) 
+      for (let n = 0; n < this.numOfPrevNeurons; ++n) {
+        this.Neurons[i].weights[n] +=
+          this.learningrate *
+          gr_sum[i] + 
+          this.alpha *
+          this.Neurons[i].inputs[n]
+      }
+    }
+    return gr_sum;
+  }
 }
 
 /* ----------------------------- Output Layer Class ----------------------------------- */
@@ -132,32 +134,10 @@ export class OutputLayer extends Layer {
   public BackwardPass(errors: Array<number>): Array<number> {
     let gr_summ: Array<number> = [];
     for (let i = 0; i < this.numOfPrevNeurons; i++) {
-      let sum: number = 0;
-      for (let k = 0; k < this.Neurons.length; k++) {
-        sum +=
-          this.Neurons[k].weights[i] +
-          this.Neurons[k].Gradient(
-            errors[k],
-            this.Neurons[k].Derivativator(),
-            0
-          );
-      }
-      gr_summ[i] = sum;
+      this.Neurons.forEach(neuron => {
+        gr_summ[i] = neuron.Gradient(neuron.Delta(errors[0], 0))
+      }) 
     }
-  
-    for (let i = 0; i < this.numOfNeurons; i++) {
-      for (let k = 0; k < this.numOfPrevNeurons; k++) {
-        this.Neurons[i].weights[k] +=
-          this.learningrate *
-          this.Neurons[i].inputs[k] *
-          this.Neurons[i].Gradient(
-           errors[i],
-            this.Neurons[i].Derivativator(),
-            0
-          );
-      }
-    }
-  
-    return gr_summ;
+    return gr_summ
   }
 }
