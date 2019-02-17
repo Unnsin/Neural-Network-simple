@@ -44,10 +44,7 @@ export default class NeuralNetwork {
   }
 
   public getCost(mses: Array<number>): number {
-    let sum: number = 0;
-    for (let i = 0; i < mses.length; i++) {
-      sum += mses[i];
-    }
+    let sum: number = mses.reduce((accum, curent) => accum + curent)
     return sum / mses.length;
   }
 
@@ -55,21 +52,20 @@ export default class NeuralNetwork {
     let threshold: number = 0.25;
     let temp_mess: Array<number> = new Array(iterError);
     let temp_cost: number = 0;
-    // do {
-       for (let i = 0; i < net.inputLayer.Trainset().length; i++) {
+    do {
+      for (let i = 0; i < net.inputLayer.Trainset().length; i++) {
         net.hiddenLayer.Data(net.inputLayer.Trainset()[i][0]);
         net.hiddenLayer.Recognize(null, net.outputLayer);
         net.outputLayer.Recognize(net, null);
         temp_mess[i] = net.getMSE(net, i);
-        let temp_gsums: Array<number> = net.outputLayer.BackwardPass([temp_mess[i]]);
-        net.hiddenLayer.BackwardPass(temp_gsums);
+        let temp_gsums: Array<number> = net.outputLayer.BackwardPass([net.getMSE(net, i)]);
+        net.hiddenLayer.BackwardPass(temp_gsums);    
       }
       temp_cost = net.getCost(temp_mess);
       console.log(`Temp cost: ${temp_cost}`);
-    // } while (temp_cost > threshold);
+    }   while (temp_cost > threshold);
     net.hiddenLayer.WeightInitialize(MemoryMode.SET, "hidden_layer");
     net.outputLayer.WeightInitialize(MemoryMode.SET, "output_layer");
-    
   }
 
   static Test(net: NeuralNetwork): void {
@@ -88,7 +84,7 @@ export default class NeuralNetwork {
 
   static Main(): void {
     let network: NeuralNetwork = new NeuralNetwork();
-    this.Train(network);
-    //this.Test(network);
+    // this.Train(network);
+    this.Test(network);
   }
 }

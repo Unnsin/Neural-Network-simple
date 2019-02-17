@@ -1,12 +1,24 @@
 import { NeuronType } from "./constans";
 
 export default class Neuron {
+  private _prevWeightDelta: Array<number> = [];
   constructor(
     private _inputs: Array<number>,
     private _weights: Array<number>,
     private _type: NeuronType,
-    public output: number,
-  ) {}
+  ) {
+    for(let i=0; i < +_weights.length; i++){
+      this._prevWeightDelta.push(0);
+    }
+  }
+
+  get prevWeightDelta(): Array<number>{
+    return this._prevWeightDelta
+  }
+
+  set prevWeightDelta(inputs: Array<number>) {
+    this._prevWeightDelta = inputs;
+  }
 
   get inputs(): Array<number> {
     return this._inputs;
@@ -33,12 +45,7 @@ export default class Neuron {
   }
 
   Output = (): number => {
-    if(this.output !== 0){
-      return this.output
-    } else {
-      this.output = this.Activator(this.inputs, this.weights);
       return this.Activator(this.inputs, this.weights);
-    }
   };
 
   Activator = (inputs: Array<number>, weights: Array<number>): number => {
@@ -53,10 +60,10 @@ export default class Neuron {
     return (1 - input) * input;
   }
 
-  Delta = (error: number, g_sum: number): number => {
+  Delta = (error: number): number => {
     let sum: number = 0;
     this.weights.forEach(item => {
-      sum += item * g_sum
+      sum += item * error
     });
     return this.type ===  NeuronType.Output ? 
       error * this.Derivator(this.Output()) : 
