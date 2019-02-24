@@ -1,7 +1,6 @@
 import InputLayer from "./InputLayer";
 import { HiddenLayer, OutputLayer } from "./Layer";
 import { NeuronType, MemoryMode } from "./constans";
-import { networkInterfaces } from "os";
 
 function MSE(outputSet: Array<number>, answerSet: Array<number>) {
   if (outputSet.length == 1) {
@@ -62,8 +61,8 @@ export default class NeuralNetwork {
         net.hiddenLayer.BackwardPass(temp_gsums);    
       }
       temp_cost = net.getCost(temp_mess);
-      console.log(`Temp cost: ${temp_cost}`);
-    }   while (temp_cost > threshold);
+      console.log(`Temp cost: ${temp_mess[0]}`);
+    } while (temp_cost > threshold)
     net.hiddenLayer.WeightInitialize(MemoryMode.SET, "hidden_layer");
     net.outputLayer.WeightInitialize(MemoryMode.SET, "output_layer");
   }
@@ -82,9 +81,16 @@ export default class NeuralNetwork {
     }
   }
 
+  static Recognize(net: NeuralNetwork): void {
+    net.hiddenLayer.Data(net.inputLayer.Trainset()[0][0]);
+    net.hiddenLayer.Recognize(null, net.outputLayer);
+    net.outputLayer.Recognize(net, null);
+  }
+
   static Main(): void {
     let network: NeuralNetwork = new NeuralNetwork();
     // this.Train(network);
-    this.Test(network);
+    // this.Test(network);
+    this.Recognize(network);
   }
 }

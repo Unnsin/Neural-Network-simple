@@ -15,8 +15,8 @@ export abstract class Layer {
   protected neuronType: NeuronType; // тип нейронов в слое
   public Neurons: Array<Neuron>; // нейроны текущего слоя 
   protected Weights: Array<Array<number>>;  // вес синапсов
-  protected learningrate: number = 0.3; // скорость обучения 
-  protected alpha: number = 0.9; //момент
+  protected learningrate: number = 0.7; // скорость обучения 
+  protected alpha: number = 0.3; //момент
 
   constructor(non: number, nopn: number, nt: NeuronType, type: string) {
     this.Neurons = new Array(non);
@@ -140,10 +140,10 @@ export class OutputLayer extends Layer {
           let delta = neuron.Delta(errors[iter]);
           let gradient = neuron.Gradient(delta);
           weightDelta[index] = this.learningrate * gradient + this.alpha * neuron.prevWeightDelta[index]
-          weight += weightDelta[index];
+          neuron.weights[index] += weightDelta[index];
         })   
         neuron.prevWeightDelta = weightDelta;
       })
-     return gr_summ;
+    return gr_summ;
    }
 }

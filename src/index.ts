@@ -1,59 +1,17 @@
 import * as fs from "fs";
 import * as js2xmlparser from "js2xmlparser";
 import * as parser from "xml2json";
-import NeuralNetwork from "./NeuralNetwork";
+import NeuralNetwork from "./Neural1/NeuralNetwork";
+import { MemoryMode } from './Neural2/constans';
+import Layer from './Neural2/Layer';
 
-const E = 0.7;
-const A = 0.3;
+const layer = new Layer(2, 2, "hidden_layer", MemoryMode.CREATE)
+const layer2 = new Layer(1, 2, "output_layer", MemoryMode.CREATE);
+layer.Data([1, 0]);
+console.log(layer, layer2)
+const recognize = layer.Recognize()
+console.log(recognize);
+layer2.Data(recognize);
+console.log(layer2.Recognize())
 
-//Сигмоид, функция активации для каждого нейрона. Применяеться для вычисление output нейрона на основе суммы input
-function sigmoid(x: Number) {
-  return 1 / (1 + Math.exp(-x));
-}
-
-//Производная от функции активации(сигмоида) используеться для вычисление дельты
-function sigmoidDerivative(x: number) {
-  return (1 - x) * x;
-}
-
-// Функция применяемая для вычисления дельты нейрона без исходящих синопсов
-function delta(out: number, answer: number) {
-  return (answer - out) * sigmoidDerivative(out);
-}
-
-//Функция применяеться для вычисления дельты нейрона с исходящими синопсами
-function alternativeDelta(out: number, wArr: Array<number>, delta: number) {
-  if (wArr.length == 1) {
-    return sigmoidDerivative(out) * (wArr[0] * delta);
-  }
-  const sum = wArr.reduce((accum, current) => accum + current * delta);
-  return sigmoidDerivative(out) * sum;
-}
-
-//Функция для вычисления градиента нейрона
-function gradient(delta: number, output: number) {
-  return delta * output;
-}
-
-// Новый вес синопса
-function MOR(
-  grad: number,
-  delta: number,
-  weight: number,
-  previousWeight: number
-) {
-  return weight + (E * grad + A * previousWeight);
-}
-
-//Функция для подсчета ошибки
-function MSE(outputSet: Array<number>, answerSet: Array<number>) {
-  if (outputSet.length == 1) {
-    return Math.pow(answerSet[0] - outputSet[0], 2) / 1;
-  }
-  const answer = outputSet.reduce((accumulator, currentValue, index) => {
-    return accumulator + Math.pow(answerSet[index] - currentValue, 2);
-  });
-  return answer / outputSet.length;
-}
-
-NeuralNetwork.Main();
+// NeuralNetwork.Main();
