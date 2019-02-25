@@ -90,8 +90,13 @@ export default class Layer {
     return outVector
   }
 
-  public BackwardPass() {
-
+  public BackwardPass(errors: Array<number>): Array<number>{
+    const neuronError: Array<number> = []
+    this.Neurons.forEach((neuron, index) => {
+      neuronError.push(errors[index] * neuron.Derivative())
+    });
+    console.log(neuronError)
+    return []
   }
   
 }

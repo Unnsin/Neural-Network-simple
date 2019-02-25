@@ -18,4 +18,8 @@ export default class Neuron {
 		})
 		return 1 / (1 + Math.exp(-sum));
 	}
+
+	Derivative(): number {
+		return this.Active() * (1 - this.Active())
+	}
 }
