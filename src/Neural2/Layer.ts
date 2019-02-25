@@ -1,5 +1,5 @@
 import Neuron from "../Neural2/Neuron";
-import { MemoryMode, NeuronType } from './constans'
+import { MemoryMode, NeuronType, LayerType } from './constans'
 import * as fs from "fs";
 import * as js2xmlparser from "js2xmlparser";
 import * as parser from "xml2json";
@@ -10,13 +10,15 @@ export default class Layer {
   public learningRate: number = 0.2;
   public neuronOnLayer: number;
   public neuronOfPrevLayer: number;
-  public layerType: string; 
+  public layerTypeName: string; 
+  public layerType: LayerType;
 
-  constructor(neuron: number, neuronPrev: number, type: string, weightsInitilTypes: MemoryMode) {
+  constructor(neuron: number, neuronPrev: number, typeName: string, weightsInitilTypes: MemoryMode, layerType: LayerType) {
     this.neuronOnLayer = neuron;
     this.neuronOfPrevLayer = neuronPrev;
-    this.layerType = type;
-    this.Weights = this.WeightInitialize(weightsInitilTypes, this.layerType);
+    this.layerTypeName = typeName;
+    this.layerType = layerType
+    this.Weights = this.WeightInitialize(weightsInitilTypes, this.layerTypeName);
     for (let k = 0; k < this.neuronOnLayer; k++) {
       let temp_weights = []
       for(let l = 0; l < this.neuronOfPrevLayer; l++) {
@@ -88,5 +90,8 @@ export default class Layer {
     return outVector
   }
 
+  public BackwardPass() {
+
+  }
   
 }

@@ -16,6 +16,6 @@ export default class Neuron {
 		this.inputs.forEach((input, weightsIndex)=> {
 			sum += input * this.weights[weightsIndex];
 		})
-		return Math.sign(sum);
+		return 1 / (1 + Math.exp(-sum));
 	}
 }
